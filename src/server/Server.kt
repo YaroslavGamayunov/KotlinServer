@@ -1,26 +1,31 @@
 package server
 
-import java.io.BufferedReader
-import java.io.BufferedWriter
-import java.io.IOException
+import java.io.*
+import java.net.InetAddress
 import java.net.ServerSocket
 import java.net.Socket
 
-class Server {
-    //lateinit var clientSocket: Socket; //сокет для общения
-    lateinit var serverSocket: ServerSocket; // серверсокет
-    //lateinit var inputStream: BufferedReader; // поток чтения из сокета
-    //lateinit var outputStream: BufferedWriter; // поток записи в сокет
-    private val PORT = 4004;
+class Server(port: Int) {
+    private val port = port
+
+    private var serverSocket: ServerSocket = ServerSocket(port);
+    private var connectionList: Array<ServerConnection> = emptyArray()
 
     init {
-        try {
-            println("Starting server port $PORT")
-            serverSocket = ServerSocket(PORT)
-            var client: Socket = serverSocket.accept()
-            println("client connected: $client")
-        } catch (e: IOException) {
-            e.printStackTrace();
+        println("Starting server $serverSocket ${serverSocket.inetAddress.canonicalHostName}")
+
+        while (true) {
+            try {
+                var socket = serverSocket.accept()
+                println("client connected: $socket")
+
+                var connection = ServerConnection(socket)
+                connectionList.plusElement(connection)
+                connection.notifyClient("Hello from server!")
+
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
         }
     }
 }
