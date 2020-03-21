@@ -2,29 +2,35 @@ package server
 
 import java.io.*
 import java.net.Socket
-import java.util.*
 
-class ServerConnection(socket: Socket) : Thread() {
+class ServerConnection<I, O>(socket: Socket) : Thread() {
     private var client = socket
-    private var inputStream: BufferedReader
-    private var outputStream: BufferedWriter
+
+    private lateinit var clientInput: ObjectInputStream
+    private lateinit var clientOutput: ObjectOutputStream
 
     init {
-        inputStream = BufferedReader(InputStreamReader(client.getInputStream()))
-        outputStream = BufferedWriter(OutputStreamWriter(client.getOutputStream()))
-        start()
+        try {
+            clientOutput = ObjectOutputStream(client.getOutputStream())
+            clientInput = ObjectInputStream(client.getInputStream())
+            start()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
     }
 
-    fun notifyClient(message: String) {
-        outputStream.write(message + "\n")
-        outputStream.flush()
+    fun notifyClient(serverObject: O) {
+        println("writing obj $serverObject")
+        clientOutput.writeObject(serverObject)
+        clientOutput.flush()
     }
 
     override fun run() {
         while (true) {
             try {
-                var line = inputStream.readLine()
-                println("Message received: '$line' socket=$client ")
+                sleep(1000)
+                var inputObject: I = clientInput.readObject() as I
+                println("Object from client received: $inputObject socket=$client ")
             } catch (e: IOException) {
                 e.printStackTrace()
             }

@@ -3,11 +3,18 @@ import server.Server
 import java.lang.Thread.sleep
 
 fun main(args: Array<String>) {
+    var server = Server<ServerObject, ServerObject>(4004)
+
     Thread {
-        var server = Server(4004)
-    }.start();
-    Thread {
+        var client = Client<ServerObject, ServerObject>("localhost", 4004)
         sleep(2000)
-        var client = Client("localhost", 4004)
     }.start();
+
+    Thread {
+        sleep(3000)
+        for (connection in server.connectionList) {
+            println("notifying!!")
+            connection.notifyClient(ServerObject(PacketType.MESSAGE, "hi server"))
+        }
+    }.start()
 }
