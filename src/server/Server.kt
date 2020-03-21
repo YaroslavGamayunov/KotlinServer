@@ -1,21 +1,20 @@
 package server
 
+import ServerObject
 import java.io.*
 import java.net.InetAddress
 import java.net.ServerSocket
 import java.net.Socket
 
-class Server<I, O>(port: Int) : Thread() {
-    private val port = port
+class Server(private val port: Int) : Thread() {
 
     private lateinit var serverSocket: ServerSocket
-    var connectionList: ArrayList<ServerConnection<I, O>> = ArrayList()
+    var connectionList: ArrayList<Connection> = ArrayList()
 
 
     init {
         try {
             serverSocket = ServerSocket(port);
-            println("Starting server $serverSocket ${serverSocket.inetAddress.canonicalHostName}")
             start()
         } catch (e: IOException) {
             e.printStackTrace()
@@ -26,11 +25,13 @@ class Server<I, O>(port: Int) : Thread() {
         while (true) {
             try {
                 var socket = serverSocket.accept()
-                println("client connected: $socket")
-
-                connectionList.add(ServerConnection<I, O>(socket))
-
-                println("connections list len=${connectionList.size}")
+                var connection = Connection(socket)
+                connection.connectionCallback = object : SocketConnectionCallback {
+                    override fun onReceive(serverObject: ServerObject) {
+                        println("Server received object $serverObject")
+                    }
+                }
+                connectionList.add(connection)
             } catch (e: IOException) {
                 e.printStackTrace()
             }
