@@ -2,14 +2,12 @@ package server
 
 import ServerObject
 import java.io.*
-import java.net.InetAddress
 import java.net.ServerSocket
-import java.net.Socket
 
 class Server(private val port: Int) : Thread() {
 
     private lateinit var serverSocket: ServerSocket
-    var connectionList: ArrayList<Connection> = ArrayList()
+    var connectionList: ArrayList<ServerConnection> = ArrayList()
 
 
     init {
@@ -25,7 +23,7 @@ class Server(private val port: Int) : Thread() {
         while (true) {
             try {
                 var socket = serverSocket.accept()
-                var connection = Connection(socket)
+                var connection = ServerConnection(socket)
                 connection.connectionCallback = object : SocketConnectionCallback {
                     override fun onReceive(serverObject: ServerObject) {
                         println("Server received object $serverObject")

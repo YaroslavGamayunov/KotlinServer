@@ -6,7 +6,7 @@ import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.net.Socket
 
-class Connection(socket: Socket) {
+class ServerConnection(socket: Socket) {
     private var socket: Socket = socket
     lateinit var inputStream: ObjectInputStream
     lateinit var outputStream: ObjectOutputStream
