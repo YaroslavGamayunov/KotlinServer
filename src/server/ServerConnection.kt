@@ -1,5 +1,6 @@
 package server
 
+import java.io.EOFException
 import java.io.IOException
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
@@ -35,6 +36,8 @@ class ServerConnection(socket: Socket) {
                     connectionCallback?.onReceive(inputObject)
                 } catch (e: IOException) {
                     e.printStackTrace()
+                } catch (e: EOFException) {
+                    break
                 }
             }
         }.start()
