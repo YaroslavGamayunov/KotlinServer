@@ -1,6 +1,5 @@
 package server
 
-import ServerObject
 import java.io.IOException
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
@@ -11,7 +10,7 @@ class ServerConnection(socket: Socket) {
     lateinit var inputStream: ObjectInputStream
     lateinit var outputStream: ObjectOutputStream
 
-    var connectionCallback: SocketConnectionCallback? = null
+    var connectionCallback: ServerConnectionCallback? = null
 
     init {
         try {

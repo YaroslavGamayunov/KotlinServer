@@ -1,7 +1,5 @@
 package server
 
-import ServerObject
-
-interface SocketConnectionCallback {
+interface ServerConnectionCallback {
     fun onReceive(serverObject: ServerObject)
 }

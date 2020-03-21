@@ -1,7 +1,7 @@
 package server
 
-import ServerObject
 import java.io.*
+import java.net.InetAddress
 import java.net.ServerSocket
 
 class Server(private val port: Int) : Thread() {
@@ -13,6 +13,7 @@ class Server(private val port: Int) : Thread() {
     init {
         try {
             serverSocket = ServerSocket(port);
+            println("Starting server on ${InetAddress.getLocalHost().hostAddress}")
             start()
         } catch (e: IOException) {
             e.printStackTrace()
@@ -24,7 +25,7 @@ class Server(private val port: Int) : Thread() {
             try {
                 var socket = serverSocket.accept()
                 var connection = ServerConnection(socket)
-                connection.connectionCallback = object : SocketConnectionCallback {
+                connection.connectionCallback = object : ServerConnectionCallback {
                     override fun onReceive(serverObject: ServerObject) {
                         println("Server received object $serverObject")
                     }
