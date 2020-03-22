@@ -50,10 +50,11 @@ class MainScreen : JFrame() {
         add(createHostButton)
         add(Box.createVerticalGlue())
 
-        contentPane.preferredSize = Dimension(200, 400)
+        contentPane.preferredSize = Dimension(600, 600)
 
-        defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
         pack()
+        setLocationRelativeTo(null);
+        defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
         isResizable = true
         isVisible = true
     }
